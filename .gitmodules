@@ -1,0 +1,7 @@
+[submodule "third-party/glad"]
+	path = third-party/glad
+	url = git@github.com:Dav1dde/glad.git
+    branch = c
+[submodule "third-party/glfw"]
+	path = third-party/glfw
+	url = git@github.com:glfw/glfw.git

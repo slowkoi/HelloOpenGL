@@ -8,8 +8,7 @@ project (HelloOpengGL)
 
 # Create a sources variable with a link to all cpp files to compile
 set(SOURCES
-    src/Hello.cpp
-    src/main.cpp
+src/main.cpp
 )
 
 # Add an executable with the above sources
@@ -40,3 +39,5 @@ target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
 
+set(GLM_DIR "third-party/glm")
+include_directories("${GLM_DIR}")

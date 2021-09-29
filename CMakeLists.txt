@@ -9,6 +9,7 @@ project (HelloOpengGL)
 # Create a sources variable with a link to all cpp files to compile
 set(SOURCES
 src/main.cpp
+src/stb_image.cpp
 )
 
 # Add an executable with the above sources
@@ -41,3 +42,33 @@ target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
 
 set(GLM_DIR "third-party/glm")
 include_directories("${GLM_DIR}")
+
+# Scan through resource folder for updated files and copy if none existing or changed
+file (GLOB_RECURSE resources "resources/*.*")
+foreach(resource ${resources})
+ get_filename_component(filename ${resource} NAME)
+ get_filename_component(dir ${resource} DIRECTORY)
+ get_filename_component(dirname ${dir} NAME)
+ 
+ set (output "")
+ 
+ while(NOT ${dirname} STREQUAL resources)
+  get_filename_component(path_component ${dir} NAME)
+  set (output "${path_component}/${output}")
+  get_filename_component(dir ${dir} DIRECTORY)
+  get_filename_component(dirname ${dir} NAME)
+ endwhile()
+ 
+ set(output "${CMAKE_CURRENT_BINARY_DIR}/resources/${output}/${filename}")
+ 
+ add_custom_command(
+  COMMENT "Moving updated resource-file '${filename}'"
+  OUTPUT ${output}
+  DEPENDS ${resource}
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  ${resource}
+  ${output}
+ )
+ add_custom_target(${filename} ALL DEPENDS ${resource} ${output})
+ 
+endforeach()

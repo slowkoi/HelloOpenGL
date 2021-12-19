@@ -43,6 +43,12 @@ target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
 set(GLM_DIR "third-party/glm")
 include_directories("${GLM_DIR}")
 
+set(FREETYPE_DIR "third-party/freetype")
+add_subdirectory("${FREETYPE_DIR}")
+target_link_libraries(HelloOpengGL "freetype" "${FREETYPE_LIBRARIES}")
+target_include_directories(HelloOpengGL PRIVATE "t${FREETYPE_DIR}/include")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "FREETYPE_INCLUDE_NONE")
+
 # Scan through resource folder for updated files and copy if none existing or changed
 file (GLOB_RECURSE resources "resources/*.*")
 foreach(resource ${resources})

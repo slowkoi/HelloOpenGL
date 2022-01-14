@@ -11,7 +11,8 @@
 
 #include <shader.h>
 #include <camera.h>
-#include <cube.h>
+#include <node.h>
+#include <cube_render.h>
 #include <ui_text.h>
 #include <texture_render.h>
 
@@ -37,10 +38,6 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-
-// lighting
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-glm::vec3 cubePos(-1.2f, -1.0f, -2.0f);
 
 int main()
 {
@@ -118,7 +115,14 @@ int main()
     basicLighting.setInt("diffuseMap", 0);
     basicLighting.setInt("specularMap", 1);
 
-    Cube cube;
+    CubeRender cubeRender;
+
+    Node lightNode;
+    lightNode.setPosition(1.2f, 1.0f, 2.0f);
+    lightNode.setScale(0.5f);
+    Node cubeNode;
+    cubeNode.setPosition(-1.2f, -1.0f, -2.0f);
+    cubeNode.setScale(2.0f);
 
     // render loop
     // -----------
@@ -143,7 +147,7 @@ int main()
         basicLighting.use();
         basicLighting.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         basicLighting.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        basicLighting.setVec3("lightPos", lightPos);
+        basicLighting.setVec3("lightPos", lightNode.position.x, lightNode.position.y, lightNode.position.z);
         basicLighting.setVec3("viewPos", camera.Position);
 
         // view/projection transformations
@@ -160,15 +164,16 @@ int main()
 
         // world transformation
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, cubePos);
-        cube.draw(basicLighting, model, view, projection);
+        model = glm::translate(model, cubeNode.position);
+        model = glm::scale(model, glm::vec3(cubeNode.scale));
+        cubeRender.draw(basicLighting, model, view, projection);
 
         // also draw the lamp object
         lightCubeShader.use();
         model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-        cube.draw(lightCubeShader, model, view, projection);
+        model = glm::translate(model, lightNode.position);
+        model = glm::scale(model, glm::vec3(lightNode.scale)); // a smaller cube
+        cubeRender.draw(lightCubeShader, model, view, projection);
 
         uiText.drawText(uiTextShader, "This is sample te啊xt", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
         uiText.drawTextResizeHeight(uiTextShader, "(C) LearnOpenGL.com", 125.0f, 125.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
@@ -215,6 +220,10 @@ void processInput(GLFWwindow *window)
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        camera.ProcessKeyboard(DOWN, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        camera.ProcessKeyboard(UP, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

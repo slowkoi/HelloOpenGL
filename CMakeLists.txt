@@ -10,6 +10,7 @@ project (HelloOpengGL)
 set(SOURCES
 src/main.cpp
 src/stb_image.cpp
+src/node.cpp
 )
 
 # Add an executable with the above sources

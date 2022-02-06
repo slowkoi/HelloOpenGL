@@ -26,8 +26,8 @@ void processInput(GLFWwindow *window);
 unsigned int loadTexture(const char *path);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -86,6 +86,8 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    Shader sdfShader("resources/shaders/sdf.vs", "resources/shaders/sdf.fs");
+
     Shader uiTextShader("resources/shaders/font.vs", "resources/shaders/font.fs");
     glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(SCR_WIDTH), 0.0f, static_cast<GLfloat>(SCR_HEIGHT));
     glm::mat4 model = glm::mat4(1.0f);
@@ -108,6 +110,10 @@ int main()
     unsigned int diffuseMap = loadTexture("resources/textures/container2.png");
     unsigned int specularMap = loadTexture("resources/textures/container2_specular.png");
     unsigned int meguminn = loadTexture("resources/textures/meguminnnnn.png");
+    unsigned int sdfOrigin = loadTexture("resources/textures/tu.png");
+    unsigned int sdf64 = loadTexture("resources/textures/tu-sdf64.png");
+    unsigned int sdf128 = loadTexture("resources/textures/tu-sdf128.png");
+    unsigned int sdf512 = loadTexture("resources/textures/tu-sdf512.png");
 
     // shader configuration
     // --------------------
@@ -178,14 +184,32 @@ int main()
         uiText.drawText(uiTextShader, "This is sample te啊xt", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
         uiText.drawTextResizeHeight(uiTextShader, "(C) LearnOpenGL.com", 125.0f, 125.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 
-        model = glm::mat4(1.0f);
-        view = glm::mat4(1.0f);
-        projection = glm::ortho(0.0f, static_cast<GLfloat>(SCR_WIDTH), 0.0f, static_cast<GLfloat>(SCR_HEIGHT));
+        // model = glm::mat4(1.0f);
+        // view = glm::mat4(1.0f);
+        // projection = glm::ortho(0.0f, static_cast<GLfloat>(SCR_WIDTH), 0.0f, static_cast<GLfloat>(SCR_HEIGHT));
         textureRender.draw(
             uiTextShader,
-            meguminn,
-            25.0, 25.0,
-            100.0, 100.0,
+            sdfOrigin,
+            0.0, 0.0,
+            20.0, 20.0,
+            model, view, projection);
+        textureRender.draw(
+            sdfShader,
+            sdf64,
+            20.0, 0.0,
+            20.0, 20.0,
+            model, view, projection);
+        textureRender.draw(
+            sdfShader,
+            sdf128,
+            40.0, 0.0,
+            20.0, 20.0,
+            model, view, projection);
+        textureRender.draw(
+            sdfShader,
+            sdf512,
+            60.0, 0.0,
+            20.0, 20.0,
             model, view, projection);
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

@@ -100,7 +100,7 @@ public:
         // 激活对应的渲染状态
         s.use();
         s.setVec3("textColor", color.x, color.y, color.z);
-        glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(800), 0.0f, static_cast<GLfloat>(600));
+        glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(1920), 0.0f, static_cast<GLfloat>(1080));
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
         s.setMat4("projection", projection);
